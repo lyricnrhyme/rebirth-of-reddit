@@ -26,29 +26,52 @@ popRed.addEventListener("load", function(req) {
 
         let picDiv = document.createElement("div");
         picDiv.className = "picDiv";
-        // picDiv.style.backgroundSize = "cover";
-        postDiv.appendChild(picDiv);
+        picDiv.style.backgroundSize = "cover";
 
         let postImg = document.createElement("img");
         postImg.className = "postImg";
+        picDiv.appendChild(postImg);
+        postImg.style.display = "none";
+
+        let videoPost = document.createElement("video");
+        videoPost.className = "videoPost";
+        videoPost.style.width = "100%";
+        videoPost.style.height = "100%";
+        videoPost.style.controls;
+        picDiv.appendChild(videoPost);
+
+        let videoSrc = document.createElement("source");
+        videoSrc.className = "videoSrc";
+        videoPost.appendChild(videoSrc);
+
         if (posts[i].data.url && posts[i].data.url.includes(".jpg")) {
             // picDiv.innerHTML = "JPEG!";
-            postImg.src = posts[i].data.url
-        } else if (posts[i].data.url && posts[i].data.url.includes(".gif")) {
-            picDiv.style.backgroundImage = "url('" + posts[i].data.url + "')";
-            picDiv.innerHTML = "GIFFF";
-            // console.log("this is a gif", posts[i].data.url)
-        } else {
-            picDiv.innerHTML = "NOT JPEG OR GIF!";
-            postImg.src = "assets/redPanda404.jpg"
-        }
-        // if (!postImg.src) {
-        //     //add replacement image
-        //     postImg.src = "assets/redPanda404.jpg"
-        // }
-        picDiv.appendChild(postImg);
-        
+            picDiv.style.backgroundImage = "url('" + posts[i].data.url + "')"
+        } else if (posts[i].data.url.includes(".gif")) {
+            let splitUrl = "";
+            if (posts[i].data.url.includes("imgur")) {
+                splitUrl = posts[i].data.url.split("");
+                splitUrl.pop();
+                splitUrl = splitUrl.join("");
+                postImg.src = splitUrl;
+            } else {
+                picDiv.style.backgroundImage = "url('" + posts[i].data.url + "')";
+            }
 
+            postImg.style.display = "block";
+        } else if (posts[i].data.url.includes(".png")) {
+            picDiv.style.backgroundImage = "url('" + posts[i].data.url + "')"
+        } else if (posts[i].data.url.includes("v.redd")) {
+            videoSrc.src = posts[i].data.media.reddit_video.fallback_url;
+            videoSrc.type = "video/mp4";
+            //add link to video element
+        }else {
+            picDiv.innerHTML = "NOT JPEG OR GIF!";
+        }
+        if (!picDiv.style.backgroundImage && !postImg.src && !videoSrc.src) {
+            picDiv.style.backgroundImage = "url('assets/redPanda404.jpg')"
+        }
+        postDiv.appendChild(picDiv);
 
         let length = 50;
         let titleDiv = document.createElement("div");
